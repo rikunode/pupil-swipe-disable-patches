@@ -1,4 +1,4 @@
-# Pupil 6.1.1 gallery swipe disable patch
+# Pupil 6.1.1 gallery swipe and update-check patches
 
 A small [Morphe](https://morphe.software/) patch for the [official Pupil](https://codeberg.org/pupil/Pupil) Android gallery reader.
 
@@ -24,12 +24,16 @@ Verified SHA-256 of that APK:
 - Download/delete actions remain available from the three-dot overflow menu.
 - Patch is **ON by default**. To restore the swipe action, disable the patch in Morphe Manager and re-patch.
 - Does not yet add an in-app runtime ON/OFF toggle.
+- Optional **Disable automatic update checks** patch: prevents the built-in update dialog from appearing when Pupil is opened. Manual version checks from Settings still work. It does **not** disable download, watchlist, or other notifications.
+- Both patches default to ON in Morphe; they can be selected separately.
 
 **Do not use the earlier v1.0.0 Morphe patch bundle:** it targeted an obsolete 2019-era SwipeLayout and **does not work** on current Pupil versions.
 
 ## Implementation and safety
 
 In the official 6.1.1 APK, the `SwipeRevealBox` Compose function creates `androidx.compose.foundation.gestures.AnchoredDraggableElement`. This class appears only in the `SwipeRevealBox` call path. We set the element's `enabled` constructor argument to false and also disable it in the recomposition `update()` method. The patch checks for the **exact** 6.1.1 bytecode layout before applying, and refuses to apply to another layout.
+
+Automatic-update suppression targets the `UpdateKt.checkUpdate$default` bytecode bridge used by `MainComposeActivity.onResume`. It leaves the `UpdateKt.checkUpdate(context, true)` entry point for manual Settings checks intact. Its exact 6.1.1 bytecode layout is checked before patching.
 
 Build compilation and successful patcher execution are separate from actual device testing. Back up Pupil data before replacing the app: Android app-signature mismatch may require uninstall/reinstall, which may erase app data.
 

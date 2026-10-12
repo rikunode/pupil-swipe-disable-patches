@@ -16,3 +16,19 @@ object AnchoredElementUpdateFingerprint : Fingerprint(
     parameters = listOf("Landroidx/compose/ui/Modifier\$Node;"),
     returnType = "V",
 )
+
+/**
+ * Only the automatically invoked Kotlin default-argument bridge.
+ * The Settings page calls UpdateKt.checkUpdate(Context, true) directly.
+ */
+object AutomaticUpdateBridgeFingerprint : Fingerprint(
+    definingClass = "Lxyz/quaver/pupil/util/UpdateKt;",
+    name = "checkUpdate\$default",
+    parameters = listOf(
+        "Landroid/content/Context;",
+        "Z",
+        "I",
+        "Ljava/lang/Object;",
+    ),
+    returnType = "V",
+)
