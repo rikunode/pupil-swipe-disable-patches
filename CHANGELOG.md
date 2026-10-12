@@ -1,3 +1,9 @@
+## [1.2.0](https://github.com/rikunode/pupil-swipe-disable-patches/compare/v1.1.0...v1.2.0) (2026-10-12)
+
+### ✨ New Features
+
+* Allow disabling automatic Pupil update prompts ([e79dd03](https://github.com/rikunode/pupil-swipe-disable-patches/commit/e79dd034a30645f8144aa0b9aa641c434f9c2c01))
+
 ## [1.1.0](https://github.com/rikunode/pupil-swipe-disable-patches/compare/v1.0.0...v1.1.0) (2026-10-12)
 
 ### ✨ New Features
