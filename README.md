@@ -28,8 +28,21 @@ Version compatibility other than 4.2-beta1 is experimental and **has not been ve
 ## Available patches
 
 <!-- PATCHES_START EXPANDED -->
+> **[v1.0.0](https://github.com/rikunode/pupil-swipe-disable-patches/releases/tag/v1.0.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;1 patches total
+<details open>
+<summary>📦 Pupil&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
+<br>
 
-The patch list in this section is generated and updated by the official Morphe release workflow.
+**🎯 Supported versions:**
+
+| 4.2-beta2 | 4.2-beta1 |
+| :---: | :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Disable gallery left swipe](#disable-gallery-left-swipe) | Prevent left swipes on Pupil gallery cards from opening download/delete actions. Regular taps and vertical scrolling remain available. |  |
+
+</details>
 
 <!-- PATCHES_END -->
 
