@@ -36,10 +36,21 @@ Build compilation and successful patcher execution are separate from actual devi
 ## Patches
 
 <!-- PATCHES_START EXPANDED -->
-> **[v1.0.0](https://github.com/rikunode/pupil-swipe-disable-patches/releases/tag/v1.0.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;1 patches total
+> **[v1.1.0](https://github.com/rikunode/pupil-swipe-disable-patches/releases/tag/v1.1.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;1 patches total
 <details open>
 <summary>📦 Pupil&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
 <br>
+
+**🎯 Supported versions:**
+
+| 6.1.1 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Disable gallery left swipe](#disable-gallery-left-swipe) | Disable the left-swipe action tray on Pupil 6.1.1 gallery cards. Preserve taps, long taps, reader gestures and vertical scrolling. |  |
+
+</details>
 
 <!-- PATCHES_END -->
 
