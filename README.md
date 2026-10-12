@@ -36,6 +36,10 @@ Build compilation and successful patcher execution are separate from actual devi
 ## Patches
 
 <!-- PATCHES_START EXPANDED -->
+> **[v1.0.0](https://github.com/rikunode/pupil-swipe-disable-patches/releases/tag/v1.0.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;1 patches total
+<details open>
+<summary>📦 Pupil&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
+<br>
 
 <!-- PATCHES_END -->
 

@@ -1,7 +1,7 @@
 {
-  "created_at": "",
-  "description": "",
-  "download_url": "",
+  "created_at": "2026-10-12T01:12:49",
+  "description": "## 1.0.0 (2026-10-12)\n\n### 🐛 Bug Fixes\n\n* Restore release markers and include newest Pupil beta tag ([88bf0b0](https://github.com/rikunode/pupil-swipe-disable-patches/commit/88bf0b0ecb93316b1e4c162c0a18d1332be8bad4))\n\n### ✨ New Features\n\n* Disable Pupil gallery left swipe ([876a541](https://github.com/rikunode/pupil-swipe-disable-patches/commit/876a5417bda0f367648658f71a9a16f0a22afbf0))",
+  "download_url": "https://github.com/rikunode/pupil-swipe-disable-patches/releases/download/v1.0.0/patches-1.0.0.mpp",
   "signature_download_url": "",
-  "version": ""
+  "version": "1.0.0"
 }

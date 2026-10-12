@@ -1,5 +1,46 @@
 {
   "NOTE": "Do NOT manually edit this file. This file is automatically updated when semantic release (release.yml) runs. Manually editing this file can break your releases and break third party tools that use this file.",
-  "version": "0.0.0",
-  "patches": []
+  "version": "1.0.0",
+  "patches": [
+    {
+      "name": "Disable gallery left swipe",
+      "description": "Prevent left swipes on Pupil gallery cards from opening download/delete actions. Regular taps and vertical scrolling remain available.",
+      "default": true,
+      "category": null,
+      "compatiblePackages": [
+        {
+          "packageName": "xyz.quaver.pupil",
+          "name": "Pupil",
+          "description": null,
+          "apkFileType": "APK",
+          "appIconColor": "#FFFFFF",
+          "signatures": null,
+          "targets": [
+            {
+              "version": "4.2-beta2",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": "4.2-beta1",
+              "versionCodes": null,
+              "isExperimental": false,
+              "minSdk": null,
+              "description": null
+            },
+            {
+              "version": null,
+              "versionCodes": null,
+              "isExperimental": true,
+              "minSdk": null,
+              "description": null
+            }
+          ]
+        }
+      ],
+      "options": []
+    }
+  ]
 }
