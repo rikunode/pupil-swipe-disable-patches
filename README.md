@@ -25,6 +25,14 @@ The source matches Pupil's `xyz.quaver.pupil` Android package and `4.2-beta1` re
 
 Version compatibility other than 4.2-beta1 is experimental and **has not been verified**. Local build and static checks do not substitute for real Pupil APK patching and on-device testing.
 
+## Available patches
+
+<!-- PATCHES_START EXPANDED -->
+
+The patch list in this section is generated and updated by the official Morphe release workflow.
+
+<!-- PATCHES_END -->
+
 ## Build
 
 Derived from [Morphe's official patches template](https://github.com/MorpheApp/morphe-patches-template).

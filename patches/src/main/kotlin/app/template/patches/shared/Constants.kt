@@ -5,9 +5,10 @@ import app.morphe.patcher.patch.AppTarget
 import app.morphe.patcher.patch.Compatibility
 
 /**
- * Version 4.2-beta1 comes from wowososkw/Pupil app/build.gradle.
- * Other versions are explicitly experimental: a matching fingerprint and
- * an actual device check are required before claiming compatibility.
+ * Git tags 4.2-beta1 and 4.2-beta2 currently point to the SAME source
+ * commit, whose app/build.gradle still declares versionName 4.2-beta1.
+ * Both known version strings are advertised, but on-device support is not
+ * confirmed. Any future version is explicitly experimental.
  */
 val PupilCompatibility = Compatibility(
     name = "Pupil",
@@ -15,6 +16,7 @@ val PupilCompatibility = Compatibility(
     apkFileType = ApkFileType.APK,
     appIconColor = 0xFFFFFF,
     targets = listOf(
+        AppTarget(version = "4.2-beta2"),
         AppTarget(version = "4.2-beta1"),
         AppTarget(version = null, isExperimental = true),
     ),
