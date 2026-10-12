@@ -1,20 +1,17 @@
-group = "app.template"
+group = "dev.rikunode.pupil"
 
 patches {
-    // TODO: Update this section with your project details.
     about {
-        name = "UserXYZ Patches"
-        description = "Patches for apps I like"
-        source = "git@github.com:UserXYZ/morphe-patches.git"
-        author = "Awesome dev"
-        contact = "na"
-        website = "na"
+        name = "rikunode Pupil patches"
+        description = "Minimal patches for the Pupil Android gallery reader"
+        source = "https://github.com/rikunode/pupil-swipe-disable-patches"
+        author = "rikunode"
+        contact = "https://github.com/rikunode"
+        website = "https://github.com/rikunode/pupil-swipe-disable-patches"
         license = "GPLv3"
     }
 }
 
-// Separate configuration so gson is available at runtime for the
-// generatePatchesList task but never bundled into the APK.
 val patchListGeneratorClasspath = configurations.create("patchListGeneratorClasspath")
 
 dependencies {
@@ -24,16 +21,10 @@ dependencies {
 
 tasks {
     register<JavaExec>("generatePatchesList") {
-        description = "Build patch with patch list"
-
+        description = "Generate Morphe patch metadata"
         dependsOn(build)
-
         classpath = sourceSets["main"].runtimeClasspath + patchListGeneratorClasspath
         mainClass.set("util.PatchListGeneratorKt")
     }
-
-    // Used by gradle-semantic-release-plugin.
-    publish {
-        dependsOn("generatePatchesList")
-    }
+    publish { dependsOn("generatePatchesList") }
 }
