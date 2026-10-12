@@ -1,48 +1,48 @@
-# Pupil gallery swipe patch
+# Pupil 6.1.1 gallery swipe disable patch
 
-A tiny, independent Morphe-compatible patch for [Pupil](https://github.com/wowososkw/Pupil) (Android, Hitomi.la reader).
+A small [Morphe](https://morphe.software/) patch for the [official Pupil](https://codeberg.org/pupil/Pupil) Android gallery reader.
 
-**Purpose:** Disable the left-swipe gesture on gallery listing cards, which otherwise reveals download/delete actions. Tapping cards and vertical scrolling should continue to work. This does **not** disable swiping between pages in the reader.
+## Add the source to Morphe
 
-## Install
+**[Add to Morphe](https://morphe.software/add-source?github=rikunode/pupil-swipe-disable-patches)**
 
-1. Open [Add this patch source to Morphe](https://morphe.software/add-source?github=rikunode/pupil-swipe-disable-patches), or paste the GitHub repository URL into Morphe Manager's patch sources.
-2. Choose Pupil and enable **Disable gallery left swipe**.
-3. Patch the original Pupil APK. Make a data backup beforehand; the patched app may need reinstalling due to different app signatures.
+Source: https://github.com/rikunode/pupil-swipe-disable-patches
 
-Morphe source URL: https://github.com/rikunode/pupil-swipe-disable-patches
+## Target APK (specific release)
 
-## Configuration
+**Pupil 6.1.1** (versionCode 1510, package `xyz.quaver.pupil`).
 
-- **ON (default):** Enable the patch in Morphe Manager; the card's left-swipe-to-open gesture is disabled in the patched APK.
-- **OFF:** Disable the patch and re-patch/reinstall the original app to restore the gesture.
+Download the [official Pupil 6.1.1 APK](https://codeberg.org/pupil/Pupil/releases/download/6.1.1/Pupil-v6.1.1.apk) from [Codeberg](https://codeberg.org/pupil/Pupil/releases/tag/6.1.1).
 
-This first version deliberately does *not* add a new runtime preference in Pupil's own settings. That would require separate preference/UI integration and should only be attempted after confirming stability on a real device.
+Verified SHA-256 of that APK:
+`9a3513f1f6a0a132a6e187d78e5837eefb086115f2ec19a7de6f7e8e38e2aa09`
 
-## Implementation
+## What changes
 
-The source matches Pupil's `xyz.quaver.pupil` Android package and `4.2-beta1` repository version. The patch overrides `com.daimajia.swipe.SwipeLayout.isRightSwipeEnabled(): boolean` to return false. In the gallery card XML, `drag_edge="right"`, so a leftward finger swipe opens the right-side action tray. The library's gesture handler calls `isRightSwipeEnabled()` to decide whether to intercept it. Other SwipeLayout edges and click/long-click handling are not modified.
+- Disables **left swiping gallery LIST cards to reveal download/delete actions**.
+- Does NOT disable tapping cards, long-press, normal vertical scrolling or reader page navigation.
+- Download/delete actions remain available from the three-dot overflow menu.
+- Patch is **ON by default**. To restore the swipe action, disable the patch in Morphe Manager and re-patch.
+- Does not yet add an in-app runtime ON/OFF toggle.
 
-Version compatibility other than 4.2-beta1 is experimental and **has not been verified**. Local build and static checks do not substitute for real Pupil APK patching and on-device testing.
+**Do not use the earlier v1.0.0 Morphe patch bundle:** it targeted an obsolete 2019-era SwipeLayout and **does not work** on current Pupil versions.
 
-## Available patches
+## Implementation and safety
+
+In the official 6.1.1 APK, the `SwipeRevealBox` Compose function creates `androidx.compose.foundation.gestures.AnchoredDraggableElement`. This class appears only in the `SwipeRevealBox` call path. We set the element's `enabled` constructor argument to false and also disable it in the recomposition `update()` method. The patch checks for the **exact** 6.1.1 bytecode layout before applying, and refuses to apply to another layout.
+
+Build compilation and successful patcher execution are separate from actual device testing. Back up Pupil data before replacing the app: Android app-signature mismatch may require uninstall/reinstall, which may erase app data.
+
+## Patches
 
 <!-- PATCHES_START EXPANDED -->
-
-The patch list in this section is generated and updated by the official Morphe release workflow.
 
 <!-- PATCHES_END -->
 
 ## Build
 
-Derived from [Morphe's official patches template](https://github.com/MorpheApp/morphe-patches-template).
+Based on the [official Morphe patch template](https://github.com/MorpheApp/morphe-patches-template). Run `./gradlew buildAndroid` with the standard Morphe development environment configured.
 
-```sh
-./gradlew buildAndroid
-```
+## License
 
-The resulting `.mpp` file is under `patches/build/libs/`. The repository's upstream GitHub Actions workflow produces releases when changes are merged into `main`.
-
-## Source and license
-
-Patch code: GPL-3.0-or-later; [LICENSE](LICENSE). Trademarks and original app copyright belong to their respective owners. This project is independent and not affiliated with Pupil or Morphe.
+Patch code: [GPLv3](LICENSE). The original app is by its respective maintainers. This project is independently maintained and not affiliated with Morphe or Pupil.

@@ -2,17 +2,17 @@ package dev.rikunode.pupil
 
 import app.morphe.patcher.Fingerprint
 
-/**
- * AndroidSwipeLayout's isRightSwipeEnabled() is checked by checkCanDrag()
- * when a gallery card is dragged left. Pupil source uses SwipeLayout 1.2.0.
- * Fingerprint restricts the patch to this precise library method.
- *
- * Patching a library method means a changed/obfuscated app version will
- * fail closed (not silently alter unrelated gesture handling).
- */
-object RightSwipeEnabledFingerprint : Fingerprint(
-    definingClass = "Lcom/daimajia/swipe/SwipeLayout;",
-    name = "isRightSwipeEnabled",
+/** Exact classes/methods preserved in official Pupil 6.1.1 R8 APK. */
+object AnchoredElementCreateFingerprint : Fingerprint(
+    definingClass = "Landroidx/compose/foundation/gestures/AnchoredDraggableElement;",
+    name = "create",
     parameters = emptyList(),
-    returnType = "Z",
+    returnType = "Landroidx/compose/ui/Modifier\$Node;",
+)
+
+object AnchoredElementUpdateFingerprint : Fingerprint(
+    definingClass = "Landroidx/compose/foundation/gestures/AnchoredDraggableElement;",
+    name = "update",
+    parameters = listOf("Landroidx/compose/ui/Modifier\$Node;"),
+    returnType = "V",
 )
