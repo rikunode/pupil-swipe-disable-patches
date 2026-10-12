@@ -1,10 +1,10 @@
 {
   "NOTE": "Do NOT manually edit this file. This file is automatically updated when semantic release (release.yml) runs. Manually editing this file can break your releases and break third party tools that use this file.",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "patches": [
     {
       "name": "Disable gallery left swipe",
-      "description": "Prevent left swipes on Pupil gallery cards from opening download/delete actions. Regular taps and vertical scrolling remain available.",
+      "description": "Disable the left-swipe action tray on Pupil 6.1.1 gallery cards. Preserve taps, long taps, reader gestures and vertical scrolling.",
       "default": true,
       "category": null,
       "compatiblePackages": [
@@ -17,23 +17,9 @@
           "signatures": null,
           "targets": [
             {
-              "version": "4.2-beta2",
+              "version": "6.1.1",
               "versionCodes": null,
               "isExperimental": false,
-              "minSdk": null,
-              "description": null
-            },
-            {
-              "version": "4.2-beta1",
-              "versionCodes": null,
-              "isExperimental": false,
-              "minSdk": null,
-              "description": null
-            },
-            {
-              "version": null,
-              "versionCodes": null,
-              "isExperimental": true,
               "minSdk": null,
               "description": null
             }

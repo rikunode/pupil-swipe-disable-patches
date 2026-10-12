@@ -1,3 +1,9 @@
+## [1.1.0](https://github.com/rikunode/pupil-swipe-disable-patches/compare/v1.0.0...v1.1.0) (2026-10-12)
+
+### ✨ New Features
+
+* Support Pupil 6.1.1 Compose gallery swipe ([f954d27](https://github.com/rikunode/pupil-swipe-disable-patches/commit/f954d2702baf864bcf3a4fe42e541d7351f2ed09))
+
 ## 1.0.0 (2026-10-12)
 
 ### 🐛 Bug Fixes
