@@ -1,3 +1,9 @@
+## [1.3.0](https://github.com/rikunode/pupil-swipe-disable-patches/compare/v1.2.0...v1.3.0) (2026-10-15)
+
+### ✨ New Features
+
+* add optional Favorites random shortcut for Pupil 6.1.1 ([0971581](https://github.com/rikunode/pupil-swipe-disable-patches/commit/0971581223dc71a372dda7e7e0bfcf26fd1013ad))
+
 ## [1.2.0](https://github.com/rikunode/pupil-swipe-disable-patches/compare/v1.1.0...v1.2.0) (2026-10-12)
 
 ### ✨ New Features
