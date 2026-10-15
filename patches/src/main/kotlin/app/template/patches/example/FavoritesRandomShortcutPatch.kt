@@ -64,22 +64,30 @@ val favoritesRandomShortcutPatch = bytecodePatch(
         val listMethod = GalleryListShortcutFingerprint.method
         val listInstructions = listMethod.implementation?.instructions
             ?: error("Pupil 6.1.1 GalleryList bytecode is missing")
-        require(listInstructions.size > 100 &&
-            (listInstructions[0] as? ReferenceInstruction)?.reference?.toString() ==
+        // Verified against original Pupil 6.1.1 classes.dex, not the Java decompiler's
+        // simplified statement ordering. The first three dex ops move parameters.
+        require(listInstructions.size == 577 &&
+            listMethod.implementation?.registerCount == 45 &&
+            listInstructions[0].opcode == Opcode.MOVE_OBJECT_FROM16 &&
+            (listInstructions[3] as? ReferenceInstruction)?.reference?.toString() ==
                 "Ljava/lang/Object;->getClass()Ljava/lang/Class;"
         ) { "Unexpected Pupil 6.1.1 GalleryList layout; refusing random shortcut patch" }
 
         val detailMethod = GalleryDetailShortcutFingerprint.method
         val detailInstructions = detailMethod.implementation?.instructions
             ?: error("Pupil 6.1.1 GalleryDetailPage bytecode is missing")
-        require(detailInstructions.size > 30) {
+        require(detailInstructions.size == 176 &&
+            detailMethod.implementation?.registerCount == 32 &&
+            detailInstructions[0].opcode == Opcode.MOVE_FROM16
+        ) {
             "Unexpected Pupil 6.1.1 GalleryDetailPage layout; refusing random shortcut patch"
         }
 
         val resumeMethod = MainResumeShortcutFingerprint.method
         val resumeInstructions = resumeMethod.implementation?.instructions
             ?: error("Pupil 6.1.1 MainComposeActivity.onResume bytecode is missing")
-        require(resumeInstructions.size in 3..12 &&
+        require(resumeInstructions.size == 6 &&
+            resumeMethod.implementation?.registerCount == 4 &&
             resumeInstructions[0].opcode == Opcode.INVOKE_SUPER &&
             resumeInstructions.last().opcode == Opcode.RETURN_VOID &&
             resumeInstructions.any {
