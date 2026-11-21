@@ -126,8 +126,8 @@ val favoritesRandomShortcutPatch = bytecodePatch(
         // remain live here; the injected call reads but does not clobber either.
         require(settingsInstructions.size == 900 &&
             settingsMethod.implementation?.registerCount == 46 &&
-            settingsInstructions[854].opcode == Opcode.SGET &&
-            (settingsInstructions[854] as? ReferenceInstruction)?.reference?.toString() ==
+            settingsInstructions[853].opcode == Opcode.SGET &&
+            (settingsInstructions[853] as? ReferenceInstruction)?.reference?.toString() ==
                 "Lxyz/quaver/pupil/R\$string;->settings_manage_favorites:I" &&
             settingsInstructions[865].opcode == Opcode.MOVE_OBJECT_FROM16 &&
             settingsInstructions[866].opcode == Opcode.INVOKE_STATIC_RANGE &&
