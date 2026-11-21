@@ -113,8 +113,8 @@ public final class FavoritesRandomShortcut {
             if (preference == null) throw new NoSuchMethodException("Preference/12");
             preference.invoke(null, "ランダムボタンの位置", null, current,
                     false, false, null, onClick, null, null, composer, 0, 446);
-        } catch (ReflectiveOperationException error) {
-            throw new IllegalStateException("Pupil 6.1.1 Preference UI unavailable", error);
+        } catch (ReflectiveOperationException | RuntimeException error) {
+            return;
         }
     }
 
