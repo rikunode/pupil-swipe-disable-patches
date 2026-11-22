@@ -18,6 +18,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function1;
+import kotlin.jvm.functions.Function3;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 public final class FavoritesRandomShortcut {
@@ -30,6 +31,7 @@ public final class FavoritesRandomShortcut {
     private static final String SIDE_KEY = "random_button_side";
     private static final String DETAIL_KEY = "random_button_on_detail";
     private static WeakReference<ImageButton> shortcutButton = new WeakReference<>(null);
+    private static WeakReference<Activity> currentActivity = new WeakReference<>(null);
     private static boolean openingRandom;
     private static boolean onFavorites;
     private static boolean detailVisible;
@@ -70,6 +72,7 @@ public final class FavoritesRandomShortcut {
     }
 
     public static void install(Activity activity) {
+        currentActivity = new WeakReference<>(activity);
         FrameLayout root = activity.findViewById(android.R.id.content);
         if (root == null) return;
 
@@ -173,6 +176,88 @@ public final class FavoritesRandomShortcut {
         }
     }
 
+    // Registers a separate LazyColumn item between the thumbnails header and pager.
+    // The original three-column thumbnail grid is left untouched.
+    public static void addThumbnailShortcutItem(Object lazyListScope) {
+        Activity activity = currentActivity.get();
+        if (activity == null || !showOnDetail(activity)) return;
+        try {
+            Function3 content = (scope, composer, flags) -> {
+                renderThumbnailShortcut((Context) activity, composer);
+                return Unit.INSTANCE;
+            };
+            Class<?> impl = Class.forName("androidx.compose.runtime.internal.ComposableLambdaImpl");
+            Object composable = impl.getConstructor(int.class, Object.class, boolean.class)
+                    .newInstance(0x5A4F01, content, true);
+            Class<?> scopeClass = Class.forName("androidx.compose.foundation.lazy.LazyListScope");
+            Class<?> itemClass = Class.forName("androidx.compose.foundation.lazy.LazyItemScope$-CC");
+            itemClass.getMethod("item$default", scopeClass, Function3.class)
+                    .invoke(null, lazyListScope, composable);
+        } catch (ReflectiveOperationException | RuntimeException ignored) {
+            // Fail soft: preserve the original thumbnail pager if internals differ.
+        }
+    }
+
+    private static void renderThumbnailShortcut(Context context, Object composer) {
+        Function1 factory = value -> createThumbnailShortcutRow((Context) value);
+        Function1 update = value -> Unit.INSTANCE;
+        try {
+            Class<?> modifierClass = Class.forName("androidx.compose.ui.Modifier");
+            Object companion = Class.forName("androidx.compose.ui.Modifier$Companion")
+                    .getField("$$INSTANCE").get(null);
+            Object modifier = Class.forName("androidx.compose.foundation.layout.SizeKt")
+                    .getMethod("fillMaxWidth", modifierClass, float.class)
+                    .invoke(null, companion, 1.0f);
+            Class<?> composerClass = Class.forName("androidx.compose.runtime.Composer");
+            Class.forName("androidx.compose.ui.viewinterop.AndroidView_androidKt")
+                    .getMethod("AndroidView", Function1.class, modifierClass, Function1.class,
+                            composerClass, int.class)
+                    .invoke(null, factory, modifier, update, composer, 0);
+        } catch (ReflectiveOperationException | RuntimeException ignored) {
+            // Do not crash the gallery when an internal Compose signature differs.
+        }
+    }
+
+    private static View createThumbnailShortcutRow(Context context) {
+        FrameLayout row = new FrameLayout(context) {
+            @Override
+            protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+                int width = View.MeasureSpec.getSize(widthMeasureSpec);
+                // ThumbnailPager: 3 columns, 8dp between columns, aspect ratio 0.7.
+                int itemWidth = Math.max(1, Math.round((width - 2f * dp(context, 8)) / 3f));
+                int itemHeight = Math.max(1, Math.round(itemWidth / 0.7f));
+                View button = getChildAt(0);
+                if (button != null) {
+                    button.measure(View.MeasureSpec.makeMeasureSpec(itemWidth, View.MeasureSpec.EXACTLY),
+                            View.MeasureSpec.makeMeasureSpec(itemHeight, View.MeasureSpec.EXACTLY));
+                }
+                setMeasuredDimension(width, View.resolveSize(itemHeight, heightMeasureSpec));
+            }
+
+            @Override
+            protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+                View button = getChildAt(0);
+                if (button != null) button.layout(0, 0, button.getMeasuredWidth(), button.getMeasuredHeight());
+            }
+        };
+        ImageButton button = new ImageButton(context);
+        int iconId = context.getResources().getIdentifier(
+                "shuffle_variant", "drawable", context.getPackageName());
+        if (iconId == 0) iconId = android.R.drawable.ic_menu_rotate;
+        GradientDrawable background = new GradientDrawable();
+        background.setColor(Color.rgb(68, 68, 91));
+        background.setCornerRadius(dp(context, 6));
+        button.setBackground(background);
+        button.setImageResource(iconId);
+        button.setColorFilter(Color.WHITE);
+        button.setScaleType(ImageButton.ScaleType.CENTER_INSIDE);
+        button.setPadding(dp(context, 16), dp(context, 16), dp(context, 16), dp(context, 16));
+        button.setContentDescription("お気に入りからランダムに作品を開く");
+        button.setOnClickListener(ignored -> openRandom(button));
+        row.addView(button);
+        return row;
+    }
+
     private static boolean showOnDetail(Context context) {
         return context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
                 .getBoolean(DETAIL_KEY, true);
@@ -227,6 +312,7 @@ public final class FavoritesRandomShortcut {
                     onFavorites = false;
                     detailVisible = false;
                     detailNavigation = null;
+                    currentActivity.clear();
                     openingRandom = false;
                 }
             }
@@ -273,13 +359,12 @@ public final class FavoritesRandomShortcut {
     private static void refreshVisibility() {
         ImageButton button = shortcutButton.get();
         if (button == null) return;
-        boolean visible = detailVisible
-                ? detailNavigation != null && showOnDetail(button.getContext())
-                : onFavorites && viewModel != null && showDetail != null;
+        boolean visible = !detailVisible && onFavorites
+                && viewModel != null && showDetail != null;
         button.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
-    private static int dp(Activity activity, int value) {
+    private static int dp(Context activity, int value) {
         return Math.round(value * activity.getResources().getDisplayMetrics().density);
     }
 }
