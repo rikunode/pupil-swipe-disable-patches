@@ -13,6 +13,8 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function1;
@@ -23,8 +25,10 @@ public final class FavoritesRandomShortcut {
             "xyz.quaver.pupil.ui.viewmodel.FavoritesViewModel";
     private static Object viewModel;
     private static Function1 showDetail;
+    private static Function1 detailNavigation;
     private static final String PREFS_NAME = "pupil_morphe_shortcut";
     private static final String SIDE_KEY = "random_button_side";
+    private static final String DETAIL_KEY = "random_button_on_detail";
     private static WeakReference<ImageButton> shortcutButton = new WeakReference<>(null);
     private static boolean openingRandom;
     private static boolean onFavorites;
@@ -39,7 +43,7 @@ public final class FavoritesRandomShortcut {
                 && onShowDetail instanceof Function1;
         viewModel = onFavorites ? currentViewModel : null;
         showDetail = onFavorites ? (Function1) onShowDetail : null;
-        if (!onFavorites || !previouslyFavorites) detailVisible = false;
+        if ((!onFavorites || !previouslyFavorites) && detailNavigation == null) detailVisible = false;
         refreshVisibility();
     }
 
@@ -48,10 +52,17 @@ public final class FavoritesRandomShortcut {
         refreshVisibility();
     }
 
+    public static void bindDetail(Function1 onOpenGallery) {
+        detailNavigation = onOpenGallery;
+        detailVisible = true;
+        refreshVisibility();
+    }
+
     public static Function0 wrapOnDismiss(Function0 onDismiss) {
         if (onDismiss == null) return null;
         return () -> {
             Object result = onDismiss.invoke();
+            detailNavigation = null;
             detailVisible = false;
             refreshVisibility();
             return result;
@@ -116,6 +127,55 @@ public final class FavoritesRandomShortcut {
         } catch (ReflectiveOperationException | RuntimeException error) {
             return;
         }
+        renderDetailPreference(context, composer);
+    }
+
+    private static void renderDetailPreference(Context context, Object composer) {
+        boolean enabled = showOnDetail(context);
+        Function0 onClick = () -> {
+            Context owner = context;
+            while (owner instanceof ContextWrapper && !(owner instanceof Activity)) {
+                owner = ((ContextWrapper) owner).getBaseContext();
+            }
+            if (owner instanceof Activity) {
+                Activity activity = (Activity) owner;
+                new AlertDialog.Builder(activity)
+                        .setTitle("作品ページにもランダムボタンを表示")
+                        .setSingleChoiceItems(new String[]{"ON", "OFF"}, enabled ? 0 : 1,
+                                (dialog, which) -> {
+                                    context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+                                            .edit().putBoolean(DETAIL_KEY, which == 0).apply();
+                                    dialog.dismiss();
+                                    activity.recreate();
+                                })
+                        .setNegativeButton("キャンセル", null)
+                        .show();
+            }
+            return Unit.INSTANCE;
+        };
+        try {
+            Class<?> preferences = Class.forName(
+                    "xyz.quaver.pupil.ui.compose.settings.PreferenceKt");
+            Method preference = null;
+            for (Method candidate : preferences.getDeclaredMethods()) {
+                if ("Preference".equals(candidate.getName())
+                        && candidate.getParameterTypes().length == 12) {
+                    preference = candidate;
+                    break;
+                }
+            }
+            if (preference == null) return;
+            preference.invoke(null, "作品ページにもランダムボタンを表示", null,
+                    enabled ? "ON" : "OFF", false, false, null, onClick,
+                    null, null, composer, 0, 446);
+        } catch (ReflectiveOperationException | RuntimeException error) {
+            return;
+        }
+    }
+
+    private static boolean showOnDetail(Context context) {
+        return context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+                .getBoolean(DETAIL_KEY, true);
     }
 
     private static boolean isLeft(Context context) {
@@ -166,6 +226,7 @@ public final class FavoritesRandomShortcut {
                     showDetail = null;
                     onFavorites = false;
                     detailVisible = false;
+                    detailNavigation = null;
                     openingRandom = false;
                 }
             }
@@ -174,20 +235,33 @@ public final class FavoritesRandomShortcut {
     }
 
     private static void openRandom(ImageButton button) {
+        boolean inDetail = detailVisible && detailNavigation != null;
         Object model = viewModel;
-        Function1 detail = showDetail;
-        if (!onFavorites || detailVisible || openingRandom || model == null || detail == null) return;
+        Function1 destination = inDetail ? detailNavigation : showDetail;
+        if (openingRandom || destination == null || (!inDetail && (!onFavorites || model == null))) return;
 
         openingRandom = true;
         button.setEnabled(false);
         try {
-            Object galleryId = model.getClass().getMethod("randomGalleryID").invoke(model);
+            Object galleryId;
+            if (inDetail) {
+                // Gallery details can be opened from tabs other than Favorites.
+                // Read Pupil's saved Favorites rather than relying on a tab ViewModel.
+                Object store = Class.forName("xyz.quaver.pupil.PupilKt")
+                        .getMethod("getFavorites").invoke(null);
+                Object items = store.getClass().getMethod("getItems").invoke(store);
+                List<?> favorites = (List<?>) items;
+                galleryId = favorites.isEmpty() ? null
+                        : favorites.get(ThreadLocalRandom.current().nextInt(favorites.size()));
+            } else {
+                galleryId = model.getClass().getMethod("randomGalleryID").invoke(model);
+            }
             if (galleryId instanceof Integer) {
-                hideForDetail();
-                detail.invoke(galleryId);
+                if (!inDetail) hideForDetail();
+                destination.invoke(galleryId);
             }
         } catch (ReflectiveOperationException | RuntimeException error) {
-            detailVisible = false;
+            if (!inDetail) detailVisible = false;
             refreshVisibility();
             Toast.makeText(button.getContext(), "ランダム表示を開けませんでした", Toast.LENGTH_SHORT).show();
         } finally {
@@ -197,10 +271,12 @@ public final class FavoritesRandomShortcut {
     }
 
     private static void refreshVisibility() {
-        int visibility = onFavorites && !detailVisible && viewModel != null && showDetail != null
-                ? View.VISIBLE : View.GONE;
         ImageButton button = shortcutButton.get();
-        if (button != null) button.setVisibility(visibility);
+        if (button == null) return;
+        boolean visible = detailVisible
+                ? detailNavigation != null && showOnDetail(button.getContext())
+                : onFavorites && viewModel != null && showDetail != null;
+        button.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     private static int dp(Activity activity, int value) {

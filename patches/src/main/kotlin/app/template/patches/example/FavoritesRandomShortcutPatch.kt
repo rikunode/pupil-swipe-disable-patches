@@ -72,7 +72,7 @@ private object MainResumeShortcutFingerprint : Fingerprint(
 @Suppress("unused")
 val favoritesRandomShortcutPatch = bytecodePatch(
     name = "Favorites random shortcut",
-    description = "Show one random gallery button on the Favorites tab, with its right/left position selectable in Pupil settings.",
+    description = "Show a random Favorites gallery button on the Favorites tab and optionally on gallery details, with runtime position settings.",
     default = false,
 ) {
     compatibleWith(PupilCompatibility)
@@ -156,6 +156,8 @@ val favoritesRandomShortcutPatch = bytecodePatch(
                 move-result-object v0
                 move-object/16 p1, v0
                 invoke-static {}, $SHORTCUT_CLASS->hideForDetail()V
+                move-object/from16 v0, p5
+                invoke-static {v0}, $SHORTCUT_CLASS->bindDetail(Lkotlin/jvm/functions/Function1;)V
             """.trimIndent(),
         )
         settingsMethod.addInstructions(
