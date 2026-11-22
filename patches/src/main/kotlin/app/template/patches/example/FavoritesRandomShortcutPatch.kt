@@ -79,6 +79,68 @@ private object SettingsScreenShortcutFingerprint : Fingerprint(
     returnType = "Lkotlin/Unit;",
 )
 
+private object NavigationClickShortcutFingerprint : Fingerprint(
+    definingClass = "Lxyz/quaver/pupil/ui/compose/PupilAppKt;",
+    name = "PupilApp\$lambda\$9\$0\$0\$0\$0\$0",
+    parameters = listOf(
+        "Lxyz/quaver/pupil/ui/compose/Destination;",
+        "Lkotlin/jvm/functions/Function0;",
+        "Ljava/lang/String;",
+        "Lxyz/quaver/pupil/ui/viewmodel/SearchViewModel;",
+        "Landroidx/navigation/NavHostController;",
+    ),
+    returnType = "Lkotlin/Unit;",
+)
+
+private object NavigationIconShortcutFingerprint : Fingerprint(
+    definingClass = "Lxyz/quaver/pupil/ui/compose/PupilAppKt;",
+    name = "PupilApp\$lambda\$9\$0\$0\$0\$1",
+    parameters = listOf(
+        "Lxyz/quaver/pupil/ui/compose/Destination;",
+        "Landroidx/compose/runtime/Composer;",
+        "I",
+    ),
+    returnType = "Lkotlin/Unit;",
+)
+
+private object NavigationLabelShortcutFingerprint : Fingerprint(
+    definingClass = "Lxyz/quaver/pupil/ui/compose/PupilAppKt;",
+    name = "PupilApp\$lambda\$9\$0\$0\$0\$2",
+    parameters = listOf(
+        "Lxyz/quaver/pupil/ui/compose/Destination;",
+        "Landroidx/compose/runtime/Composer;",
+        "I",
+    ),
+    returnType = "Lkotlin/Unit;",
+)
+
+private object NavigationContentShortcutFingerprint : Fingerprint(
+    definingClass = "Lxyz/quaver/pupil/ui/compose/PupilAppKt;",
+    name = "PupilApp\$lambda\$9\$2",
+    parameters = listOf(
+        "Landroidx/compose/runtime/snapshots/SnapshotStateList;",
+        "Landroidx/navigation/NavHostController;",
+        "Lkotlin/jvm/functions/Function1;",
+        "Lxyz/quaver/pupil/ui/viewmodel/SearchViewModel;",
+        "Lkotlin/jvm/functions/Function1;",
+        "Landroidx/compose/material3/SnackbarHostState;",
+        "Landroidx/compose/foundation/layout/PaddingValues;",
+        "Landroidx/compose/runtime/Composer;",
+        "I",
+    ),
+    returnType = "Lkotlin/Unit;",
+)
+
+private object NavigationTopLevelShortcutFingerprint : Fingerprint(
+    definingClass = "Lxyz/quaver/pupil/ui/compose/PupilAppKt;",
+    name = "navigateToTopLevel",
+    parameters = listOf(
+        "Landroidx/navigation/NavHostController;",
+        "Lxyz/quaver/pupil/ui/compose/Destination;",
+    ),
+    returnType = "V",
+)
+
 private object MainResumeShortcutFingerprint : Fingerprint(
     definingClass = "Lxyz/quaver/pupil/ui/MainComposeActivity;",
     name = "onResume",
@@ -89,7 +151,7 @@ private object MainResumeShortcutFingerprint : Fingerprint(
 @Suppress("unused")
 val favoritesRandomShortcutPatch = bytecodePatch(
     name = "Favorites random shortcut",
-    description = "Show a random Favorites gallery button on the Favorites tab and optionally on gallery details, with runtime position settings.",
+    description = "Random Favorites shortcuts on the Favorites tab, gallery details and optional Downloads navigation slot, with runtime settings.",
     default = false,
 ) {
     compatibleWith(PupilCompatibility)
@@ -176,6 +238,73 @@ val favoritesRandomShortcutPatch = bytecodePatch(
                 "Lxyz/quaver/pupil/ui/compose/settings/SettingsScreenKt;->UserIdPreference(Landroidx/compose/runtime/Composer;I)V"
         ) { "Unexpected Pupil 6.1.1 SettingsScreen layout; refusing settings shortcut patch" }
 
+        val navClickMethod = NavigationClickShortcutFingerprint.method
+        val navClickInstructions = navClickMethod.implementation?.instructions
+            ?: error("Missing Pupil 6.1.1 bottom navigation click method")
+        require(navClickInstructions.size == 16 &&
+            navClickMethod.implementation?.registerCount == 7 &&
+            navClickInstructions[0].opcode == Opcode.SGET_OBJECT &&
+            (navClickInstructions[0] as? ReferenceInstruction)?.reference?.toString() ==
+                "Lxyz/quaver/pupil/ui/compose/Destination;->Settings:Lxyz/quaver/pupil/ui/compose/Destination;" &&
+            navClickInstructions[14].opcode == Opcode.INVOKE_STATIC &&
+            (navClickInstructions[14] as? ReferenceInstruction)?.reference?.toString() ==
+                "Lxyz/quaver/pupil/ui/compose/PupilAppKt;->navigateToTopLevel(Landroidx/navigation/NavHostController;Lxyz/quaver/pupil/ui/compose/Destination;)V"
+        ) { "Unexpected Pupil 6.1.1 navigation click layout" }
+
+        val navIconMethod = NavigationIconShortcutFingerprint.method
+        val navIconInstructions = navIconMethod.implementation?.instructions
+            ?: error("Missing Pupil 6.1.1 navigation icon method")
+        require(navIconInstructions.size == 27 &&
+            navIconMethod.implementation?.registerCount == 12 &&
+            navIconInstructions[13].opcode == Opcode.INVOKE_VIRTUAL &&
+            (navIconInstructions[13] as? ReferenceInstruction)?.reference?.toString() ==
+                "Lxyz/quaver/pupil/ui/compose/Destination;->getIconRes()I" &&
+            navIconInstructions[14].opcode == Opcode.MOVE_RESULT &&
+            navIconInstructions[15].opcode == Opcode.INVOKE_STATIC &&
+            (navIconInstructions[15] as? ReferenceInstruction)?.reference?.toString()?.startsWith(
+                "Landroidx/compose/ui/res/PainterResources_androidKt;->painterResource("
+            ) == true
+        ) { "Unexpected Pupil 6.1.1 navigation icon layout" }
+
+        val navLabelMethod = NavigationLabelShortcutFingerprint.method
+        val navLabelInstructions = navLabelMethod.implementation?.instructions
+            ?: error("Missing Pupil 6.1.1 navigation label method")
+        require(navLabelInstructions.size == 39 &&
+            navLabelMethod.implementation?.registerCount == 25 &&
+            navLabelInstructions[13].opcode == Opcode.INVOKE_VIRTUAL_RANGE &&
+            (navLabelInstructions[13] as? ReferenceInstruction)?.reference?.toString() ==
+                "Lxyz/quaver/pupil/ui/compose/Destination;->getLabelRes()I" &&
+            navLabelInstructions[14].opcode == Opcode.MOVE_RESULT &&
+            navLabelInstructions[15].opcode == Opcode.INVOKE_STATIC &&
+            (navLabelInstructions[15] as? ReferenceInstruction)?.reference?.toString()?.startsWith(
+                "Landroidx/compose/ui/res/StringResources_androidKt;->stringResource("
+            ) == true
+        ) { "Unexpected Pupil 6.1.1 navigation label layout" }
+
+        val navContentMethod = NavigationContentShortcutFingerprint.method
+        val navContentInstructions = navContentMethod.implementation?.instructions
+            ?: error("Missing Pupil 6.1.1 navigation content method")
+        require(navContentInstructions.size == 55 &&
+            navContentMethod.implementation?.registerCount == 19 &&
+            navContentInstructions[0].opcode == Opcode.INVOKE_VIRTUAL_RANGE &&
+            (navContentInstructions[0] as? ReferenceInstruction)?.reference?.toString() ==
+                "Ljava/lang/Object;->getClass()Ljava/lang/Class;" &&
+            navContentInstructions[29].opcode == Opcode.INVOKE_STATIC &&
+            (navContentInstructions[29] as? ReferenceInstruction)?.reference?.toString() ==
+                "Lxyz/quaver/pupil/ui/compose/ScreenCoverKt;->getLocalScreenCovered()Landroidx/compose/runtime/ProvidableCompositionLocal;"
+        ) { "Unexpected Pupil 6.1.1 navigation content layout" }
+
+        val topLevelMethod = NavigationTopLevelShortcutFingerprint.method
+        val topLevelInstructions = topLevelMethod.implementation?.instructions
+            ?: error("Missing Pupil 6.1.1 top-level navigation method")
+        require(topLevelInstructions.size == 31 &&
+            topLevelMethod.implementation?.registerCount == 5 &&
+            topLevelInstructions[0].opcode == Opcode.INVOKE_VIRTUAL &&
+            (topLevelInstructions[0] as? ReferenceInstruction)?.reference?.toString() ==
+                "Lxyz/quaver/pupil/ui/compose/Destination;->getRoute()Ljava/lang/String;" &&
+            topLevelInstructions.last().opcode == Opcode.RETURN_VOID
+        ) { "Unexpected Pupil 6.1.1 native top-level navigation layout" }
+
         listMethod.addInstructions(
             0,
             """
@@ -203,6 +332,35 @@ val favoritesRandomShortcutPatch = bytecodePatch(
         settingsMethod.addInstructions(
             867,
             "invoke-static {v2, v5}, $SHORTCUT_CLASS->renderPositionPreference(Landroid/content/Context;Ljava/lang/Object;)V",
+        )
+        navContentMethod.addInstructions(
+            0,
+            "invoke-static {p0, p1}, $SHORTCUT_CLASS->bindNavigation(Ljava/lang/Object;Ljava/lang/Object;)V",
+        )
+        navClickMethod.addInstructions(
+            0,
+            """
+                invoke-static {p0}, $SHORTCUT_CLASS->onDownloadsNavClick(Ljava/lang/Object;)Z
+                move-result v0
+                if-eqz v0, :pupil_original_nav
+                sget-object v0, Lkotlin/Unit;->INSTANCE:Lkotlin/Unit;
+                return-object v0
+                :pupil_original_nav
+            """.trimIndent(),
+        )
+        navIconMethod.addInstructions(
+            15,
+            """
+                invoke-static {v9}, $SHORTCUT_CLASS->navIconResource(I)I
+                move-result v9
+            """.trimIndent(),
+        )
+        navLabelMethod.addInstructions(
+            15,
+            """
+                invoke-static {v0}, $SHORTCUT_CLASS->navLabelResource(I)I
+                move-result v0
+            """.trimIndent(),
         )
         resumeMethod.addInstructions(
             1,
