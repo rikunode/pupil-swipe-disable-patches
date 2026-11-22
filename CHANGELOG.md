@@ -1,3 +1,9 @@
+## [1.7.1](https://github.com/rikunode/pupil-morphe-patches/compare/v1.7.0...v1.7.1) (2026-11-22)
+
+### 🐛 Bug Fixes
+
+* align detail shortcuts horizontally and hide duplicate floating button ([4a382f5](https://github.com/rikunode/pupil-morphe-patches/commit/4a382f5a2f0eda10d1dd48d654c276663d2e3328))
+
 ## [1.7.0](https://github.com/rikunode/pupil-morphe-patches/compare/v1.6.0...v1.7.0) (2026-11-22)
 
 ### ✨ New Features
