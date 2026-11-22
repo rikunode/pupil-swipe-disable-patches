@@ -4,9 +4,9 @@ A small [Morphe](https://morphe.software/) patch for the [official Pupil](https:
 
 ## Add the source to Morphe
 
-**[Add to Morphe](https://morphe.software/add-source?github=rikunode/pupil-swipe-disable-patches)**
+**[Add to Morphe](https://morphe.software/add-source?github=rikunode/pupil-morphe-patches)**
 
-Source: https://github.com/rikunode/pupil-swipe-disable-patches
+Source: https://github.com/rikunode/pupil-morphe-patches
 
 ## Target APK (specific release)
 
@@ -40,7 +40,7 @@ Build compilation and successful patcher execution are separate from actual devi
 ## Patches
 
 <!-- PATCHES_START EXPANDED -->
-> **[v1.4.0](https://github.com/rikunode/pupil-swipe-disable-patches/releases/tag/v1.4.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;3 patches total
+> **[v1.4.0](https://github.com/rikunode/pupil-morphe-patches/releases/tag/v1.4.0)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;3 patches total
 <details open>
 <summary>📦 Pupil&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
