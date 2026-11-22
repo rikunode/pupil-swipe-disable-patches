@@ -292,25 +292,26 @@ public final class FavoritesRandomShortcut {
                 // ThumbnailPager: 3 columns, 8dp between columns, aspect ratio 0.7.
                 int itemWidth = Math.max(1, Math.round((width - 2f * dp(context, 8)) / 3f));
                 int itemHeight = Math.max(1, Math.round(itemWidth / 0.7f));
-                int topHeight = (itemHeight + 1) / 2;
-                int bottomHeight = itemHeight - topHeight;
+                int buttonHeight = Math.max(1, (itemHeight + 1) / 2);
                 getChildAt(0).measure(
                         View.MeasureSpec.makeMeasureSpec(itemWidth, View.MeasureSpec.EXACTLY),
-                        View.MeasureSpec.makeMeasureSpec(topHeight, View.MeasureSpec.EXACTLY));
+                        View.MeasureSpec.makeMeasureSpec(buttonHeight, View.MeasureSpec.EXACTLY));
                 getChildAt(1).measure(
                         View.MeasureSpec.makeMeasureSpec(itemWidth, View.MeasureSpec.EXACTLY),
-                        View.MeasureSpec.makeMeasureSpec(bottomHeight, View.MeasureSpec.EXACTLY));
-                setMeasuredDimension(width, View.resolveSize(itemHeight, heightMeasureSpec));
+                        View.MeasureSpec.makeMeasureSpec(buttonHeight, View.MeasureSpec.EXACTLY));
+                setMeasuredDimension(width, View.resolveSize(buttonHeight, heightMeasureSpec));
             }
 
             @Override
             protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
                 View random = getChildAt(0);
                 View bookmarks = getChildAt(1);
-                int split = random.getMeasuredHeight();
-                random.layout(0, 0, random.getMeasuredWidth(), split);
-                bookmarks.layout(0, split, bookmarks.getMeasuredWidth(),
-                        split + bookmarks.getMeasuredHeight());
+                int buttonWidth = random.getMeasuredWidth();
+                int gap = dp(getContext(), 8);
+                random.layout(0, 0, buttonWidth, random.getMeasuredHeight());
+                bookmarks.layout(buttonWidth + gap, 0,
+                        buttonWidth + gap + bookmarks.getMeasuredWidth(),
+                        bookmarks.getMeasuredHeight());
             }
         };
         ImageButton button = new ImageButton(context);
@@ -510,7 +511,9 @@ public final class FavoritesRandomShortcut {
     private static void refreshVisibility() {
         ImageButton button = shortcutButton.get();
         if (button == null) return;
-        boolean visible = !detailVisible && onFavorites
+        Activity activity = currentActivity.get();
+        boolean downloadsSlotReplaced = activity != null && downloadsNavEnabled(activity);
+        boolean visible = !downloadsSlotReplaced && !detailVisible && onFavorites
                 && viewModel != null && showDetail != null;
         button.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
