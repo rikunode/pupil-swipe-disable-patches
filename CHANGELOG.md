@@ -1,3 +1,9 @@
+## [1.7.0](https://github.com/rikunode/pupil-morphe-patches/compare/v1.6.0...v1.7.0) (2026-11-22)
+
+### ✨ New Features
+
+* bookmark return and optional random bottom navigation ([b312949](https://github.com/rikunode/pupil-morphe-patches/commit/b312949391598b483d534b15c55a1f92dc404e9f))
+
 ## [1.6.0](https://github.com/rikunode/pupil-morphe-patches/compare/v1.5.0...v1.6.0) (2026-11-22)
 
 ### ✨ New Features
