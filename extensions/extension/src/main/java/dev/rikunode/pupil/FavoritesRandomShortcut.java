@@ -242,8 +242,8 @@ public final class FavoritesRandomShortcut {
         }
     }
 
-    // Register a standalone LazyColumn item immediately after GalleryTypeIndicator.
-    // Neither the type chip nor the thumbnail pager is modified.
+    // Register a standalone LazyColumn item after all tag groups, immediately
+    // before the thumbnails heading. Neither heading nor thumbnail grid is modified.
     public static void addTypeShortcutItem(Object lazyListScope) {
         Activity activity = currentActivity.get();
         if (activity == null || !showOnDetail(activity)) return;
@@ -289,16 +289,15 @@ public final class FavoritesRandomShortcut {
             @Override
             protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
                 int width = View.MeasureSpec.getSize(widthMeasureSpec);
-                // The native GalleryTypeIndicator chip is 32dp tall.
-                int buttonHeight = dp(context, 32);
-                int randomWidth = dp(context, 40);
+                // Two equal-width buttons with an 8dp gap, both 48dp tall.
+                int buttonHeight = dp(context, 48);
                 int gap = dp(context, 8);
-                int bookmarkWidth = Math.max(1, Math.min(dp(context, 168), width - randomWidth - gap));
+                int buttonWidth = Math.max(1, (width - gap) / 2);
                 getChildAt(0).measure(
-                        View.MeasureSpec.makeMeasureSpec(randomWidth, View.MeasureSpec.EXACTLY),
+                        View.MeasureSpec.makeMeasureSpec(buttonWidth, View.MeasureSpec.EXACTLY),
                         View.MeasureSpec.makeMeasureSpec(buttonHeight, View.MeasureSpec.EXACTLY));
                 getChildAt(1).measure(
-                        View.MeasureSpec.makeMeasureSpec(bookmarkWidth, View.MeasureSpec.EXACTLY),
+                        View.MeasureSpec.makeMeasureSpec(buttonWidth, View.MeasureSpec.EXACTLY),
                         View.MeasureSpec.makeMeasureSpec(buttonHeight, View.MeasureSpec.EXACTLY));
                 setMeasuredDimension(width, View.resolveSize(buttonHeight, heightMeasureSpec));
             }
