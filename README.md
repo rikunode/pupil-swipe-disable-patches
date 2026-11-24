@@ -40,7 +40,7 @@ Build compilation and successful patcher execution are separate from actual devi
 ## Patches
 
 <!-- PATCHES_START EXPANDED -->
-> **[v1.7.1](https://github.com/rikunode/pupil-morphe-patches/releases/tag/v1.7.1)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;3 patches total
+> **[v1.7.2](https://github.com/rikunode/pupil-morphe-patches/releases/tag/v1.7.2)**&nbsp;&nbsp;•&nbsp;&nbsp;`main`&nbsp;&nbsp;•&nbsp;&nbsp;3 patches total
 <details open>
 <summary>📦 Pupil&nbsp;&nbsp;•&nbsp;&nbsp;3 patches</summary>
 <br>
