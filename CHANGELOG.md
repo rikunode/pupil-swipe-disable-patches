@@ -1,3 +1,9 @@
+## [1.7.4](https://github.com/rikunode/pupil-morphe-patches/compare/v1.7.3...v1.7.4) (2026-11-24)
+
+### 🐛 Bug Fixes
+
+* place equal-sized detail shortcuts before thumbnail heading ([db0c0c9](https://github.com/rikunode/pupil-morphe-patches/commit/db0c0c9a490dfdfd08f5bf9e9299b2c130f6989b))
+
 ## [1.7.3](https://github.com/rikunode/pupil-morphe-patches/compare/v1.7.2...v1.7.3) (2026-11-24)
 
 ### 🐛 Bug Fixes
