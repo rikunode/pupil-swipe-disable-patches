@@ -1,3 +1,9 @@
+## [1.7.3](https://github.com/rikunode/pupil-morphe-patches/compare/v1.7.2...v1.7.3) (2026-11-24)
+
+### 🐛 Bug Fixes
+
+* simplify Pupil patches source display name ([b29d678](https://github.com/rikunode/pupil-morphe-patches/commit/b29d678015a93b4b41395a8cd022235edb93c071))
+
 ## [1.7.2](https://github.com/rikunode/pupil-morphe-patches/compare/v1.7.1...v1.7.2) (2026-11-24)
 
 ### 🐛 Bug Fixes
