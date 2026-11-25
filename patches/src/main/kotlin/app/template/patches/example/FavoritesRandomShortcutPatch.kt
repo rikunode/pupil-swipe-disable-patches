@@ -185,12 +185,9 @@ val favoritesRandomShortcutPatch = bytecodePatch(
         val typeListInstructions = typeListMethod.implementation?.instructions
             ?: error("Pupil 6.1.1 gallery type LazyList bytecode is missing")
         // Original Pupil 6.1.1 DEX: 94 instructions, 14 registers.
-        // LazyList items at 8, 14, 20 and 26 precede the genre-tag item.
-        // Index 26 registers the final metadata item. Indices 27..30 test
-        // the genre list; 31 branches around its item when the list is empty.
-        // Inject at 31, after metadata and BEFORE the genre-list conditional,
-        // so the shortcut row is independent of whether genre tags exist.
-        // The genre item itself is registered at 37; thumbnails begin at 38.
+        // Index 14 finishes the gallery menu / viewer-download item.
+        // Indices 15..19 construct the GalleryTypeIndicator item, registered at 20.
+        // Inject at 20, after the menu item and before the type chip.
         require(typeListInstructions.size == 94 &&
             typeListMethod.implementation?.registerCount == 14 &&
             listOf(8, 14, 20, 26).all { index ->
@@ -198,6 +195,19 @@ val favoritesRandomShortcutPatch = bytecodePatch(
                     (typeListInstructions[index] as? ReferenceInstruction)?.reference?.toString() ==
                     "Landroidx/compose/foundation/lazy/LazyItemScope\$-CC;->item\$default(Landroidx/compose/foundation/lazy/LazyListScope;Lkotlin/jvm/functions/Function3;)V"
             } &&
+            typeListInstructions[15].opcode == Opcode.NEW_INSTANCE &&
+            (typeListInstructions[15] as? ReferenceInstruction)?.reference?.toString() ==
+                "Lxyz/quaver/pupil/ui/compose/GalleryDetailKt\$\$ExternalSyntheticLambda2;" &&
+            typeListInstructions[16].opcode == Opcode.INVOKE_DIRECT &&
+            (typeListInstructions[16] as? ReferenceInstruction)?.reference?.toString() ==
+                "Lxyz/quaver/pupil/ui/compose/GalleryDetailKt\$\$ExternalSyntheticLambda2;-><init>(ILkotlin/jvm/functions/Function1;Lxyz/quaver/pupil/hitomi/Gallery;)V" &&
+            typeListInstructions[17].opcode == Opcode.NEW_INSTANCE &&
+            (typeListInstructions[17] as? ReferenceInstruction)?.reference?.toString() ==
+                "Landroidx/compose/runtime/internal/ComposableLambdaImpl;" &&
+            typeListInstructions[18].opcode == Opcode.CONST &&
+            typeListInstructions[19].opcode == Opcode.INVOKE_DIRECT &&
+            (typeListInstructions[19] as? ReferenceInstruction)?.reference?.toString() ==
+                "Landroidx/compose/runtime/internal/ComposableLambdaImpl;-><init>(ILjava/lang/Object;Z)V" &&
             typeListInstructions[27].opcode == Opcode.MOVE_OBJECT &&
             typeListInstructions[28].opcode == Opcode.CHECK_CAST &&
             typeListInstructions[29].opcode == Opcode.INVOKE_INTERFACE &&
@@ -237,7 +247,7 @@ val favoritesRandomShortcutPatch = bytecodePatch(
             typeListInstructions[47].opcode == Opcode.INVOKE_STATIC &&
             (typeListInstructions[47] as? ReferenceInstruction)?.reference?.toString() ==
                 "Landroidx/compose/foundation/lazy/LazyItemScope\$-CC;->item\$default(Landroidx/compose/foundation/lazy/LazyListScope;Lkotlin/jvm/functions/Function3;)V"
-        ) { "Unexpected Pupil 6.1.1 metadata-to-genre boundary; refusing shortcut injection" }
+        ) { "Unexpected Pupil 6.1.1 gallery-menu-to-type boundary; refusing shortcut injection" }
         val resumeMethod = MainResumeShortcutFingerprint.method
         val resumeInstructions = resumeMethod.implementation?.instructions
             ?: error("Pupil 6.1.1 MainComposeActivity.onResume bytecode is missing")
@@ -364,7 +374,7 @@ val favoritesRandomShortcutPatch = bytecodePatch(
             """.trimIndent(),
         )
         typeListMethod.addInstructions(
-            31,
+            20,
             "invoke-static {p8}, $SHORTCUT_CLASS->addTypeShortcutItem(Ljava/lang/Object;)V",
         )
         settingsMethod.addInstructions(

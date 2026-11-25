@@ -242,8 +242,8 @@ public final class FavoritesRandomShortcut {
         }
     }
 
-    // Register a standalone LazyColumn item after metadata chips and before
-    // the optional genre-tag item. Neither chip group is modified.
+    // Register a standalone LazyColumn item after the viewer/download menu
+    // and before the gallery type chip, without changing either item.
     public static void addTypeShortcutItem(Object lazyListScope) {
         Activity activity = currentActivity.get();
         if (activity == null || !showOnDetail(activity)) return;
