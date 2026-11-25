@@ -1,3 +1,9 @@
+## [1.7.6](https://github.com/rikunode/pupil-morphe-patches/compare/v1.7.5...v1.7.6) (2026-11-25)
+
+### 🐛 Bug Fixes
+
+* place detail shortcuts between gallery menu and type chip ([07c4582](https://github.com/rikunode/pupil-morphe-patches/commit/07c458293d2cee124b973e52f05073edb1d93d88))
+
 ## [1.7.5](https://github.com/rikunode/pupil-morphe-patches/compare/v1.7.4...v1.7.5) (2026-11-25)
 
 ### 🐛 Bug Fixes
